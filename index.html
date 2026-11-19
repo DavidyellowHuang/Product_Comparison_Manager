@@ -16,7 +16,7 @@
 .product .pcm-actions .actions{margin-top:0}
 .product .thumbs{display:flex;overflow-x:auto;gap:8px}
 .product .thumbs img{cursor:pointer}
-</style></head><body><header><h1>商品比較收藏</h1><small>Product Comparison Manager · 截圖比較版 v0.9.11</small></header><main><section class="panel" id="cloudPanel"><div class="cloud-summary"><h2>☁️ 雲端同步</h2><button type="button" class="secondary mini" id="toggleCloud" aria-expanded="false">設定 ▾</button></div><div id="cloudStatus" class="muted" role="status" aria-live="polite">尚未連線；目前為本機模式</div><div class="actions"><button class="secondary mini" id="quickRefresh">↻ 重新讀取雲端</button><button class="secondary mini" id="checkUpdate" type="button">↻ 檢查 App 更新</button><button class="secondary mini" id="forceReload" type="button">強制重新載入</button><span id="updateStatus" class="muted" style="font-size:12px"></span></div><div id="cloudSettings" class="cloud-settings" hidden><p class="muted">請先在 Supabase 建立專案並完成資料表設定。連線設定只保存在這台裝置；登入後商品會同步到同一帳號。切勿填入 service_role 或 secret key。</p><label>Supabase Project URL</label><input id="sbUrl" type="url" placeholder="https://xxxx.supabase.co" autocomplete="off"><label>Publishable / anon key（公開金鑰）</label><input id="sbKey" placeholder="sb_publishable_... 或 anon key" autocomplete="off"><div class="actions"><button class="secondary" id="saveCloudConfig">儲存連線設定</button></div><label>登入 Email</label><input id="sbEmail" type="email" autocomplete="email"><label>密碼（至少 6 字元）</label><input id="sbPassword" type="password" autocomplete="current-password"><div class="actions"><button id="signIn">登入</button><button class="secondary" id="signUp">註冊</button><button class="secondary" id="signOut">登出</button></div><div class="actions"><button class="secondary" id="cloudRefresh">從雲端重新讀取</button><button class="secondary" id="cloudUpload">將目前本機資料上傳雲端</button></div><p class="muted">首次登入請先檢查雲端是否已有資料；「上傳」會覆蓋該帳號的雲端收藏。建議先匯出 JSON 備份。切換裝置後用相同帳號登入。夫妻共用同一帳號時，請避免同時編輯，修改前先重新讀取。</p></div></section><section class="panel"><h2>商品分類</h2><div class="chips" id="categories"></div><div class="actions"><button class="secondary" id="addCat">＋ 新增分類</button><button class="secondary" id="renameCat">修改分類</button><button class="danger" id="delCat">刪除分類</button></div></section><section class="panel"><h2>商品群組</h2><div class="chips" id="groups"></div><div class="actions"><button class="secondary" id="addGroup">＋ 新增群組</button><button class="secondary" id="renameGroup">修改群組</button><button class="danger" id="delGroup">刪除群組</button></div></section><section class="panel"><div class="row" style="align-items:center"><h2 style="flex:1" id="groupTitle">商品比較</h2><button id="addProduct">＋ 加入商品</button></div><p class="muted">左右滑動查看不同品牌，點選「規格比較」可並排查看。</p><div class="cards" id="cards"></div><div class="actions"><button class="secondary" id="compareBtn">規格比較</button><button class="secondary" id="manageImages">📷 截圖管理</button></div></section><section class="panel"><h2>資料備份</h2><p class="muted">未登入時只保存在本機；登入後修改會同步到雲端。建議定期匯出 JSON 備份。</p><div class="actions"><button class="secondary" id="exportBtn">匯出 JSON</button><button class="secondary" id="importBtn">匯入 JSON</button><input id="importFile" type="file" accept="application/json,.json" hidden></div></section></main><nav><button id="navAdd">＋ 收藏商品</button><button class="secondary" id="navCompare">查看比較</button></nav><dialog id="editor"><form id="productForm"><h2 id="editTitle">新增商品</h2><label>商品分類</label><select id="editCat" required></select><label>商品群組</label><select id="editGroup" required></select><p id="shareHint" style="display:none;background:#e7f3ed;color:#14543c;padding:12px;border-radius:10px">已收到分享網址，請自行填寫商品資料並選擇分類、群組。</p><label>MOMO 商品網址（支援分享連結）</label><input id="url" type="url" placeholder="https://momo.dm/..."><div class="actions"><button type="button" class="secondary" id="pasteBtn">貼上剪貼簿網址</button></div><p class="muted">MOMO 網址可由捷徑帶入；商品名稱、品牌、價格與規格請自行填寫或用截圖保存。</p><label>品牌</label><input id="brand" placeholder="例如 mamaway"><label>商品名稱（選填）</label><input id="name" placeholder="可稍後再填寫"><div class="row"><div><label>價格 NT$</label><input id="price" type="number" min="0" step="1"></div><div><label>個人評分（0–5）</label><input id="rating" type="number" min="0" max="5" step="0.5"></div></div><label>圖片網址（選填）</label><input id="image" type="url" placeholder="https://..."><label>商品規格（每行一項：名稱:內容）</label><textarea id="specs" rows="4" placeholder="材質: 棉\n尺寸: M/L"></textarea><label>備註</label><textarea id="notes" rows="2"></textarea><div class="actions"><button type="button" class="secondary" id="cancelEdit">取消</button><button type="submit">儲存商品</button></div></form></dialog><dialog id="imageDialog"><h2>商品截圖管理</h2><p class="muted">圖片將壓縮後上傳至私人雲端空間</p><label>選擇商品</label><select id="imageProduct"></select><label>圖片分類</label><select id="imageKind"><option value="photo">商品照片</option><option value="spec">商品規格</option><option value="detail">商品詳情</option></select><label>選擇截圖（可多選）</label><input id="imageFiles" type="file" accept="image/*" multiple><div class="actions"><button id="uploadImages" type="button">上傳截圖</button><button id="closeImages" type="button" class="secondary">關閉</button></div><div id="imageUploadStatus" class="muted"></div><div id="imageManageList"></div></dialog><dialog id="imagePreview"><div id="imagePreviewBody"></div><button id="closePreview" class="secondary">關閉圖片</button></dialog><dialog id="compareDialog"><h2>詳細規格比較</h2><div id="comparison" class="compare"></div><div class="actions"><button class="secondary" id="closeCompare">關閉</button></div></dialog><script>
+</style></head><body><header><h1>商品比較收藏</h1><small>Product Comparison Manager · 截圖比較版 v0.9.12</small></header><main><section class="panel" id="cloudPanel"><div class="cloud-summary"><h2>☁️ 雲端同步</h2><button type="button" class="secondary mini" id="toggleCloud" aria-expanded="false">設定 ▾</button></div><div id="cloudStatus" class="muted" role="status" aria-live="polite">尚未連線；目前為本機模式</div><div class="actions"><button class="secondary mini" id="quickRefresh">↻ 重新讀取雲端</button><button class="secondary mini" id="checkUpdate" type="button">↻ 檢查 App 更新</button><button class="secondary mini" id="forceReload" type="button">強制重新載入</button><span id="updateStatus" class="muted" style="font-size:12px"></span></div><div id="cloudSettings" class="cloud-settings" hidden><p class="muted">請先在 Supabase 建立專案並完成資料表設定。連線設定只保存在這台裝置；登入後商品會同步到同一帳號。切勿填入 service_role 或 secret key。</p><label>Supabase Project URL</label><input id="sbUrl" type="url" placeholder="https://xxxx.supabase.co" autocomplete="off"><label>Publishable / anon key（公開金鑰）</label><input id="sbKey" placeholder="sb_publishable_... 或 anon key" autocomplete="off"><div class="actions"><button class="secondary" id="saveCloudConfig">儲存連線設定</button></div><label>登入 Email</label><input id="sbEmail" type="email" autocomplete="email"><label>密碼（至少 6 字元）</label><input id="sbPassword" type="password" autocomplete="current-password"><div class="actions"><button id="signIn">登入</button><button class="secondary" id="signUp">註冊</button><button class="secondary" id="signOut">登出</button></div><div class="actions"><button class="secondary" id="retryCleanup" hidden>重試截圖清理</button><button class="secondary" id="cloudRefresh">從雲端重新讀取</button><button class="secondary" id="cloudUpload">將目前本機資料上傳雲端</button></div><p class="muted">首次登入請先檢查雲端是否已有資料；「上傳」會覆蓋該帳號的雲端收藏。建議先匯出 JSON 備份。切換裝置後用相同帳號登入。夫妻共用同一帳號時，請避免同時編輯，修改前先重新讀取。</p></div></section><section class="panel"><h2>商品分類</h2><div class="chips" id="categories"></div><div class="actions"><button class="secondary" id="addCat">＋ 新增分類</button><button class="secondary" id="renameCat">修改分類</button><button class="danger" id="delCat">刪除分類</button></div></section><section class="panel"><h2>商品群組</h2><div class="chips" id="groups"></div><div class="actions"><button class="secondary" id="addGroup">＋ 新增群組</button><button class="secondary" id="renameGroup">修改群組</button><button class="danger" id="delGroup">刪除群組</button></div></section><section class="panel"><div class="row" style="align-items:center"><h2 style="flex:1" id="groupTitle">商品比較</h2><button id="addProduct">＋ 加入商品</button></div><p class="muted">左右滑動查看不同品牌，點選「規格比較」可並排查看。</p><div class="cards" id="cards"></div><div class="actions"><button class="secondary" id="compareBtn">規格比較</button><button class="secondary" id="manageImages">📷 截圖管理</button></div></section><section class="panel"><h2>資料備份</h2><p class="muted">未登入時只保存在本機；登入後修改會同步到雲端。建議定期匯出 JSON 備份。</p><div class="actions"><button class="secondary" id="exportBtn">匯出 JSON</button><button class="secondary" id="importBtn">匯入 JSON</button><input id="importFile" type="file" accept="application/json,.json" hidden></div></section></main><nav><button id="navAdd">＋ 收藏商品</button><button class="secondary" id="navCompare">查看比較</button></nav><dialog id="editor"><form id="productForm"><h2 id="editTitle">新增商品</h2><label>商品分類</label><select id="editCat" required></select><label>商品群組</label><select id="editGroup" required></select><p id="shareHint" style="display:none;background:#e7f3ed;color:#14543c;padding:12px;border-radius:10px">已收到分享網址，請自行填寫商品資料並選擇分類、群組。</p><label>MOMO 商品網址（支援分享連結）</label><input id="url" type="url" placeholder="https://momo.dm/..."><div class="actions"><button type="button" class="secondary" id="pasteBtn">貼上剪貼簿網址</button></div><p class="muted">MOMO 網址可由捷徑帶入；商品名稱、品牌、價格與規格請自行填寫或用截圖保存。</p><label>品牌</label><input id="brand" placeholder="例如 mamaway"><label>商品名稱（選填）</label><input id="name" placeholder="可稍後再填寫"><div class="row"><div><label>價格 NT$</label><input id="price" type="number" min="0" step="1"></div><div><label>個人評分（0–5）</label><input id="rating" type="number" min="0" max="5" step="0.5"></div></div><label>圖片網址（選填）</label><input id="image" type="url" placeholder="https://..."><label>商品規格（每行一項：名稱:內容）</label><textarea id="specs" rows="4" placeholder="材質: 棉\n尺寸: M/L"></textarea><label>備註</label><textarea id="notes" rows="2"></textarea><div class="actions"><button type="button" class="secondary" id="cancelEdit">取消</button><button type="submit">儲存商品</button></div></form></dialog><dialog id="imageDialog"><h2>商品截圖管理</h2><p class="muted">圖片將壓縮後上傳至私人雲端空間</p><label>選擇商品</label><select id="imageProduct"></select><label>圖片分類</label><select id="imageKind"><option value="photo">商品照片</option><option value="spec">商品規格</option><option value="detail">商品詳情</option></select><label>選擇截圖（可多選）</label><input id="imageFiles" type="file" accept="image/*" multiple><div class="actions"><button id="uploadImages" type="button">上傳截圖</button><button id="closeImages" type="button" class="secondary">關閉</button></div><div id="imageUploadStatus" class="muted"></div><div id="imageManageList"></div></dialog><dialog id="imagePreview"><div id="imagePreviewBody"></div><button id="closePreview" class="secondary">關閉圖片</button></dialog><dialog id="compareDialog"><h2>詳細規格比較</h2><div id="comparison" class="compare"></div><div class="actions"><button class="secondary" id="closeCompare">關閉</button></div></dialog><dialog id="deleteProgress">正在處理收藏，請稍候…</dialog><script>
 'use strict';const KEY='pcm_mobile_v1';const $=id=>document.getElementById(id);const uid=()=>crypto.randomUUID?crypto.randomUUID():Date.now()+'-'+Math.random();const initial=()=>({categories:[{id:'c1',name:'孕產用品'},{id:'c2',name:'嬰兒用品'},{id:'c3',name:'家電用品'}],groups:[{id:'g1',categoryId:'c1',name:'托腹帶'},{id:'g2',categoryId:'c2',name:'奶瓶'},{id:'g3',categoryId:'c3',name:'淨水器'}],products:[]});let db;try{db=JSON.parse(localStorage.getItem(KEY))||initial()}catch{db=initial()}let categoryId=db.categories[0]?.id||'',groupId=db.groups.find(g=>g.categoryId===categoryId)?.id||'',editing=null;const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(db));scheduleCloudSave()}catch{alert('本機儲存失敗，請先匯出備份。')}};const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const validHttp=s=>{try{const u=new URL(s);return ['https:','http:'].includes(u.protocol)?u.href:''}catch{return ''}};const groups=()=>db.groups.filter(g=>g.categoryId===categoryId);const products=()=>db.products.filter(p=>p.groupId===groupId);
 function alignComparisonRows(){
  const cards=[...document.querySelectorAll('#cards .product')];
@@ -61,7 +61,7 @@ async function api(path,{method='GET',body,auth=true,prefer}={}){
  if(prefer)headers.Prefer=prefer;
  let res;try{res=await fetch(cloudConfig.url+path,{method,headers,body:body===undefined?undefined:JSON.stringify(body)})}catch(e){throw Error('網路連線失敗：'+e.message)}
  const raw=await res.text();let data;try{data=raw?JSON.parse(raw):null}catch{data=raw}
- if(!res.ok)throw Error(data?.msg||data?.error_description||data?.message||`HTTP ${res.status}`);
+ if(!res.ok)throw Object.assign(Error(data?.msg||data?.error_description||data?.message||`HTTP ${res.status}`),{code:data?.code,status:res.status});
  return data;
 }
 async function refreshSession(){if(!cloudSession?.refresh_token)throw Error('請重新登入');const v=await api('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:{refresh_token:cloudSession.refresh_token},auth:false});cloudSession=v;localStorage.setItem(SESSION_KEY,JSON.stringify(v));return v}
@@ -72,9 +72,11 @@ async function fetchRows(){return await authorized(()=>api('/rest/v1/product_dat
 async function cloudRead(){if(!userId())return;clearTimeout(cloudTimer);cloudRevision++;cloudReady=false;cloudLoading=true;status('正在讀取雲端資料…');try{
  const rows=await fetchRows();
  if(rows.length>1)throw Error('雲端有多筆資料，為避免覆蓋已停止同步。請先備份並檢查資料表。');
- if(rows.length){const d=rows[0].data;if(!validateData(d))throw Error('雲端資料格式不正確');cloudRowId=rows[0].id;db=d;const latest=db.products[db.products.length-1];const targetGroup=db.groups.find(g=>g.id===latest?.groupId);categoryId=targetGroup?.categoryId||db.categories[0]?.id||'';groupId=targetGroup?.id||db.groups.find(g=>g.categoryId===categoryId)?.id||'';try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){status('雲端資料已讀取，但本機快取儲存失敗：'+e.message)}render();status('已載入雲端：'+db.products.length+' 件商品、'+db.groups.length+' 個群組；目前顯示「'+(targetGroup?.name||'預設群組')+'」');}
- else{cloudRowId=null;status('已登入，雲端尚無資料。本機資料未覆蓋；確認備份後可按「將目前本機資料上傳雲端」。')}
- cloudReady=true;hydrateImages();
+ if(rows.length){const d=rows[0].data;if(!validateData(d))throw Error('雲端資料格式不正確');cloudRowId=rows[0].id;syncState=readSync(d);cloudDirty=false;db=d;const latest=db.products[db.products.length-1];const targetGroup=db.groups.find(g=>g.id===latest?.groupId);categoryId=targetGroup?.categoryId||db.categories[0]?.id||'';groupId=targetGroup?.id||db.groups.find(g=>g.categoryId===categoryId)?.id||'';try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){status('雲端資料已讀取，但本機快取儲存失敗：'+e.message)}render();status('已載入雲端：'+db.products.length+' 件商品、'+db.groups.length+' 個群組；目前顯示「'+(targetGroup?.name||'預設群組')+'」');}
+ else{syncState=readSync({});cloudRowId=null;status('已登入，雲端尚無資料。本機資料未覆蓋；確認備份後可按「將目前本機資料上傳雲端」。')}
+ cloudReady=true;showCleanup();
+ if(syncState.pending.length)status('已載入雲端；有 '+syncState.pending.length+' 張截圖待清理，請開啟設定重試');
+ hydrateImages();
  }catch(e){status('雲端讀取失敗：'+e.message);alert('讀取失敗，請勿直接覆蓋雲端資料：'+e.message)}finally{cloudLoading=false}}
 // PostgreSQL jsonb reorders object keys. Compare recursively by value, not serialized key order.
 function equalJson(a,b){if(a===b)return true;if(a===null||b===null||typeof a!==typeof b||typeof a!=='object')return false;if(Array.isArray(a)!==Array.isArray(b))return false;if(Array.isArray(a))return a.length===b.length&&a.every((v,i)=>equalJson(v,b[i]));const ka=Object.keys(a),kb=Object.keys(b);return ka.length===kb.length&&ka.every(k=>Object.prototype.hasOwnProperty.call(b,k)&&equalJson(a[k],b[k]));}
@@ -84,16 +86,16 @@ async function cloudWrite(revision){
  const snapshot=JSON.parse(JSON.stringify(db));status('正在同步雲端…');
  try{
   if(cloudRowId!==null){
-   const updated=await authorized(()=>api('/rest/v1/product_data?id=eq.'+encodeURIComponent(cloudRowId)+'&user_id=eq.'+encodeURIComponent(userId()),{method:'PATCH',body:{data:snapshot},prefer:'return=representation'}));
-   if(!Array.isArray(updated)||updated.length!==1)throw Error('雲端更新沒有匹配資料列');
-   if(!equalJson(updated[0].data,snapshot))throw Error('雲端回傳資料內容與寫入內容不同，請檢查資料表');
+   await writeSnapshot(snapshot,syncState);
+
   }else{
    const existing=await fetchRows();if(existing.length>1)throw Error('雲端有多筆資料，已停止寫入');
-   if(existing.length){cloudRowId=existing[0].id;throw Error('雲端已有資料，請先從雲端重新讀取，避免覆蓋')}
+   if(existing.length){throw Error('雲端已有資料，請先從雲端重新讀取，避免覆蓋')}
+   snapshot._pcmSync={...readSync({}),revision:uid()};
    const rows=await authorized(()=>api('/rest/v1/product_data',{method:'POST',body:{user_id:userId(),data:snapshot},prefer:'return=representation'}));
    if(!Array.isArray(rows)||!rows[0]?.id)throw Error('雲端新增後未取得資料編號');
    if(!equalJson(rows[0].data,snapshot))throw Error('雲端新增內容驗證不一致');
-   cloudRowId=rows[0].id;
+   cloudRowId=rows[0].id;syncState=readSync(snapshot);
   }
   status('已同步至雲端：'+snapshot.products.length+' 件商品（'+(cloudSession.user.email||'')+'）');
  }catch(e){cloudDirty=true;status('同步失敗：'+e.message+'；資料仍保存在本機');alert('雲端同步失敗：'+e.message)}
@@ -104,49 +106,118 @@ $('saveCloudConfig').onclick=()=>{const url=$('sbUrl').value.trim().replace(/\/+
 async function authenticate(signup){try{if(!configOk())throw Error('請先儲存連線設定');const email=$('sbEmail').value.trim(),password=$('sbPassword').value;if(!email||password.length<6)throw Error('請填 Email 與至少 6 字元密碼');const data=await api(signup?'/auth/v1/signup':'/auth/v1/token?grant_type=password',{method:'POST',body:{email,password},auth:false});if(!data.access_token){status('註冊請求已送出；請確認 Email 後登入');return}cloudSession=data;localStorage.setItem(SESSION_KEY,JSON.stringify(data));$('sbPassword').value='';await cloudRead()}catch(e){status('登入／註冊失敗：'+e.message)}}
 $('signIn').onclick=()=>authenticate(false);$('signUp').onclick=()=>authenticate(true);
 $('signOut').onclick=()=>{clearTimeout(cloudTimer);cloudRevision++;cloudSession=null;cloudReady=false;cloudDirty=false;cloudRowId=null;localStorage.removeItem(SESSION_KEY);status('已登出；本機資料仍保留')};
-$('cloudRefresh').onclick=()=>{if(!userId())return alert('請先登入');if(cloudBusy||cloudTimer||cloudDirty)return alert('目前有尚未完成或失敗的雲端寫入，請先確認同步成功再重新讀取，以免遺失商品');if(!confirm('重新讀取雲端資料可能覆蓋本機未同步修改，確定嗎？'))return;cloudRead()};
+$('cloudRefresh').onclick=()=>{if(!userId())return alert('請先登入');if(cloudBusy||cloudTimer)return alert('目前有尚未完成或失敗的雲端寫入，請先確認同步成功再重新讀取，以免遺失商品');if(cloudDirty){if(!confirm('本機有未同步變更。要下載 JSON 備份並重新讀取雲端嗎？'))return;$('exportBtn').click()}if(!confirm('重新讀取雲端資料可能覆蓋本機未同步修改，確定嗎？'))return;cloudRead()};
 $('cloudUpload').onclick=async()=>{if(!userId())return alert('請先登入');if(!cloudReady)return alert('雲端讀取尚未成功，不能上傳');if(!confirm('請先匯出 JSON 備份。確定將目前本機資料寫入雲端嗎？若雲端已有資料，會覆蓋該筆收藏。'))return;cloudRevision++;cloudDirty=true;clearTimeout(cloudTimer);cloudTimer=null;await cloudWrite(cloudRevision)};
 
 const IMG_BUCKET='pcm-images',imageCache=new Map();
 
-let pcmDeleting=false;
-async function deleteWithImages(targetProducts,commit,description){
- if(pcmDeleting)return alert('正在刪除，請稍候');
- if(!confirm('確定永久刪除'+description+'？包含 '+targetProducts.length+' 件商品及其雲端照片，刪除後無法復原。'))return;
- if(!userId()||!cloudReady||cloudLoading||cloudBusy||cloudDirty||cloudTimer)return alert('請先登入雲端，並等待所有商品同步完成後再刪除。');
- pcmDeleting=true;
- try{
-  const paths=[...new Set(targetProducts.flatMap(p=>Object.values(p.images||{}).flatMap(a=>Array.isArray(a)?a.map(x=>x.path).filter(Boolean):[])))];
-  if(paths.some(path=>!path.startsWith(userId()+'/')))throw Error('圖片路徑不屬於目前帳號，已停止刪除');
-  for(let i=0;i<paths.length;i++){
-   const path=paths[i];
-   try{
-    await authorized(()=>api('/storage/v1/object/'+IMG_BUCKET+'/'+path,{method:'DELETE'}));
-   }catch(err){
-    if(!/404|not found|does not exist/i.test(err.message))throw Error('第 '+(i+1)+' / '+paths.length+' 張圖片刪除失敗：'+err.message);
-   }
-   imageCache.delete(path);
-  }
-  commit();
-  save();render();
-  // Save() schedules a cloud write; report honestly if sync is still pending.
-  alert('已清理 '+paths.length+' 張雲端圖片並移除商品資料。請確認頂部顯示「已同步至雲端」。');
- }catch(err){alert('刪除中止：'+err.message+'。若部分圖片已刪除，可重新操作完成清理。')}
- finally{pcmDeleting=false}
+// The row and its cleanup journal share a single conditional PATCH.
+function readSync(data){
+ const state=data._pcmSync;
+ if(state===undefined)return {revision:null,pending:[],retired:[]};
+ if(!state||typeof state.revision!=='string'||!Array.isArray(state.pending)||
+    !Array.isArray(state.retired)||state.retired.some(p=>typeof p!=='string')||
+    state.pending.some(p=>!state.retired.includes(p)))throw Error('清理紀錄格式錯誤');
+ return structuredClone(state);
 }
-
+let syncState=readSync({}),pcmDeleting=false;
+function imagePaths(items){
+ return [...new Set(items.flatMap(p=>Object.values(p.images||{}).flatMap(
+  list=>Array.isArray(list)?list.map(im=>im.path).filter(Boolean):[])))];
+}
+function ownedPath(path){
+ return typeof path==='string'&&path.split('/')[0]===userId()&&
+  path.split('/').length>=2&&path.split('/').every(part=>/^[a-zA-Z0-9_-]+(?:\.[a-zA-Z0-9_-]+)*$/.test(part));
+}
+function showCleanup(){
+ $('retryCleanup').hidden=!syncState.pending.length;
+ $('retryCleanup').textContent='重試截圖清理（'+syncState.pending.length+' 張）';
+}
+async function writeSnapshot(snapshot,state){
+ if(imagePaths(snapshot.products).some(path=>state.retired.includes(path)))
+  throw Error('資料引用已移除的截圖，請重新上傳該圖片');
+ const next={...state,revision:uid()};
+ snapshot._pcmSync=next;
+ const url='/rest/v1/product_data?id=eq.'+encodeURIComponent(cloudRowId)+
+  '&user_id=eq.'+encodeURIComponent(userId());
+ const filter=syncState.revision===null?'is.null':'eq.'+encodeURIComponent(syncState.revision);
+ const rows=await authorized(()=>api(url+'&data->_pcmSync->>revision='+filter,
+  {method:'PATCH',body:{data:snapshot},prefer:'return=representation'}));
+ if(rows?.length!==1||!equalJson(rows[0].data,snapshot))
+  throw Error('寫入未確認或另一裝置已修改。請先匯出本機備份，再重新讀取雲端');
+ syncState=next;showCleanup();
+}
+function persistConfirmed(snapshot){
+ db=snapshot;render();
+ localStorage.setItem(KEY,JSON.stringify(db));
+}
+async function cleanPending(){
+ const done=[];
+ let failure;
+ for(const path of syncState.pending){
+  try{
+   if(!ownedPath(path)||imagePaths(db.products).includes(path))throw Error('圖片路徑仍被引用或無法驗證');
+   try{await authorized(()=>api('/storage/v1/object/'+IMG_BUCKET+'/'+path,{method:'DELETE'}))}
+   catch(e){if(!(e.status===404&&e.code==='NoSuchKey'))throw e}
+   imageCache.delete(path);done.push(path);
+  }catch(e){failure=e;break}
+ }
+ if(done.length){
+  const snapshot=structuredClone(db);
+  await writeSnapshot(snapshot,{...syncState,pending:syncState.pending.filter(p=>!done.includes(p))});
+  persistConfirmed(snapshot);
+ }
+ if(failure)throw failure;
+}
+async function deleteWithImages(targetProducts,commit,description){
+ if(pcmDeleting||cloudBusy||cloudLoading||cloudDirty||cloudTimer||$('uploadImages').disabled)
+  return alert('請先完成目前的讀取、寫入或圖片上傳');
+ const paths=imagePaths(targetProducts),local=!userId();
+ if(local&&(!commit||paths.length))return alert('請登入圖片所屬帳號後再清理');
+ if(!local&&(!cloudReady||cloudRowId===null||navigator.onLine===false))
+  return alert('請先連線並完成雲端同步');
+ const count=description==='這張截圖'?'':'包含 '+targetProducts.length+' 件商品。';
+ if(commit&&!confirm('確定刪除'+description+'？'+count+(local?'只會移除本機資料。':'')))return;
+ pcmDeleting=true;
+ const dialog=$('deleteProgress');
+ let committed=false;
+ try{
+  dialog.oncancel=e=>e.preventDefault();dialog.showModal();
+  if(commit){
+   const original=db;
+   let snapshot;
+   try{db=structuredClone(original);commit();snapshot=db}finally{db=original}
+   if(local){localStorage.setItem(KEY,JSON.stringify(snapshot));db=snapshot;render();return}
+   const refs=new Set(imagePaths(snapshot.products)),removed=paths.filter(p=>!refs.has(p));
+   if(removed.some(p=>!ownedPath(p)))throw Error('圖片路徑無法驗證');
+   const state={...syncState};
+   for(const key of ['retired','pending'])state[key]=[...new Set([...state[key],...removed])];
+   await writeSnapshot(snapshot,state);committed=true;persistConfirmed(snapshot);
+  }
+  await cleanPending();
+  status('已同步至雲端，截圖清理完成');
+ }catch(e){
+  status((committed?'收藏已更新；後續處理未完成：':'操作未確認：')+e.message);
+  alert($('cloudStatus').textContent+'。請重新讀取雲端確認，再重試待清理項目。');
+ }finally{dialog.close();pcmDeleting=false}
+}
+$('retryCleanup').onclick=()=>deleteWithImages([],null,'');
 async function signedImage(path){if(imageCache.has(path))return imageCache.get(path);const d=await authorized(()=>api('/storage/v1/object/sign/'+IMG_BUCKET+'/'+path,{method:'POST',body:{expiresIn:3600}}));const signed=d.signedURL||d.signedUrl;const u=new URL(signed.startsWith("/storage/v1/")?signed:("/storage/v1"+(signed.startsWith("/")?signed:"/"+signed)),cloudConfig.url).href;imageCache.set(path,u);return u}
 async function hydrateImages(){if(!cloudSession||!cloudReady)return;for(const img of document.querySelectorAll('img[data-imgpath]')){try{img.src=await signedImage(img.dataset.imgpath)}catch{img.alt='圖片載入失敗'}}}
 function openImages(){if(!userId()||!cloudReady)return alert('請先登入雲端');if(!db.products.length)return alert('請先建立商品');$('imageProduct').innerHTML=db.products.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('');$('imageKind').value='photo';$('imageDialog').showModal();renderImageList()}
 function renderImageList(){const p=db.products.find(p=>p.id===$('imageProduct').value),kind=$('imageKind').value;$('imageManageList').innerHTML=(p?.images?.[kind]||[]).map((im,i)=>'<div class="image-manage-item"><img data-imgpath="'+esc(im.path)+'"><button type="button" data-imgremove="'+i+'">刪除</button></div>').join('')||'<p class="muted">尚無截圖</p>';hydrateImages()}
 $('manageImages').onclick=openImages;$('closeImages').onclick=()=>$('imageDialog').close();$('imageProduct').onchange=renderImageList;$('imageKind').onchange=renderImageList;$('closePreview').onclick=()=>$('imagePreview').close();
-document.addEventListener('click',async e=>{const img=e.target.closest('img[data-imgpath]');if(img&&img.complete&&img.naturalWidth>0){$('imagePreviewBody').innerHTML='<img style="width:100%;max-height:70vh;object-fit:contain" src="'+esc(img.src)+'">';$('imagePreview').showModal()}const b=e.target.closest('button[data-imgremove]');if(!b)return;const p=db.products.find(p=>p.id===$('imageProduct').value),kind=$('imageKind').value,idx=Number(b.dataset.imgremove),im=p?.images?.[kind]?.[idx];if(!im||!confirm('確定刪除？'))return;try{await authorized(()=>api('/storage/v1/object/'+IMG_BUCKET+'/'+im.path,{method:'DELETE'}));p.images[kind].splice(idx,1);save();render();renderImageList()}catch(err){alert('刪除失敗：'+err.message)}});
+document.addEventListener('click',async e=>{const img=e.target.closest('img[data-imgpath]');if(img&&img.complete&&img.naturalWidth>0){$('imagePreviewBody').innerHTML='<img style="width:100%;max-height:70vh;object-fit:contain" src="'+esc(img.src)+'">';$('imagePreview').showModal()}const b=e.target.closest('button[data-imgremove]');if(!b)return;const p=db.products.find(p=>p.id===$('imageProduct').value),kind=$('imageKind').value,idx=Number(b.dataset.imgremove),im=p?.images?.[kind]?.[idx];if(!im)return;
+ await deleteWithImages([{images:{[kind]:[im]}}],()=>{
+  const target=db.products.find(x=>x.id===p.id);
+  target.images[kind].splice(idx,1);
+ },'這張截圖');renderImageList()});
 async function compressImage(file){const bmp=await createImageBitmap(file),scale=Math.min(1,1400/Math.max(bmp.width,bmp.height));const canvas=document.createElement('canvas');canvas.width=Math.round(bmp.width*scale);canvas.height=Math.round(bmp.height*scale);canvas.getContext('2d').drawImage(bmp,0,0,canvas.width,canvas.height);bmp.close?.();return await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(Error('圖片轉換失敗')),'image/jpeg',0.78))}
 $('uploadImages').onclick=async()=>{const p=db.products.find(p=>p.id===$('imageProduct').value),kind=$('imageKind').value,files=Array.from($('imageFiles').files);if(!p||!files.length)return alert('請選擇商品與圖片');if(!cloudReady||cloudBusy||cloudDirty)return alert('請先等待雲端同步完成');$('uploadImages').disabled=true;try{for(let i=0;i<files.length;i++){const blob=await compressImage(files[i]);if(blob.size>5242880)throw Error('圖片超過5MB');const path=userId()+'/'+p.id+'/'+kind+'/'+uid()+'.jpg';const res=await fetch(cloudConfig.url+'/storage/v1/object/'+IMG_BUCKET+'/'+path,{method:'POST',headers:{apikey:cloudConfig.key,Authorization:'Bearer '+cloudSession.access_token,'Content-Type':'image/jpeg','x-upsert':'false'},body:blob});if(!res.ok)throw Error('上傳失敗 '+res.status+'：'+(await res.text()).slice(0,120));p.images??={};p.images[kind]??=[];p.images[kind].push({path});$('imageUploadStatus').textContent='已上傳 '+(i+1)+' / '+files.length+' 張';save()}render();renderImageList();$('imageFiles').value=''}catch(e){$('imageUploadStatus').textContent='上傳未完成：'+e.message}finally{$('uploadImages').disabled=false}};
 
 
 // Version polling uses a unique query and no-store to avoid cached index.html.
-const PCM_VERSION='0.9.11';
+const PCM_VERSION='0.9.12';
 let pcmLastCheck=0,pcmChecking=false;
 function pcmReload(){const next=new URL(location.href);next.searchParams.set('app_version',PCM_VERSION);next.searchParams.set('refresh',String(Date.now()));location.replace(next.href)}
 $('forceReload').onclick=()=>{if(confirm('將重新載入線上頁面，請先確認商品已完成雲端同步。繼續？'))pcmReload()};
